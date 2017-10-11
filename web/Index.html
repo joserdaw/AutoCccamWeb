@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>AutoCccam WEB</title>
+        <link rel="STYLESHEET" type="text/css" href="hojaweb.css">
+        <link rel="shortcut icon" type="image/x-icon" href="random.ico" />
+        <script src="funcionesjs.js"></script>
+    </head>
+    <body>
+        
+        <h1>Cccam generator</h1>
+        
+        <form action="Generar.jsp" method="post" name="formulario">
+            
+            <input id="check" name="srvr1" type="checkbox" checked="checked">Servidor 1</input>
+            <br>
+            <input id="check" name="srvr2" type="checkbox" checked="checked">Servidor 2</input>
+            <br>
+            <input id="check" name="srvr3" type="checkbox" checked="checked">Servidor 3</input>
+            <br>
+            <input id="check" name="srvr4" type="checkbox" checked="checked">Servidor 4</input>
+            <br>
+
+            <select id="comboselect" name="combo">
+                <option value="general" selected="selected">General</option>
+                <option value="hadu">Hadu</option>
+            </select>
+
+            <br>
+            <input type="submit" value="Generar">
+            
+        </form>
+        
+    </body>
+</html>

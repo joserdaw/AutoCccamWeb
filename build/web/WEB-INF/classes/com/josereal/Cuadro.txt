@@ -1,0 +1,623 @@
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import com.jaunt.ResponseException;
+import com.jaunt.SearchException;
+import com.jaunt.UserAgent;
+import com.jaunt.component.Form;
+
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.ArrayList;
+import java.awt.event.ActionEvent;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTextField;
+
+public class Cuadro extends JFrame {
+
+	private JPanel contenido;
+	private JButton btnGenerar, btnSeleccionar, btnTodo;
+	private JCheckBox chckbxServerFullhd, chckbxServerB, chckbxServer3, chckbxServer4, chckbxForzar, chckbxForzar_1;
+	private JLabel lblRuta;
+	private JComboBox comboBox;
+	private String ruta;
+	private JTextField textFieldCampoRuta;
+	private boolean selec=false;
+	private ArrayList<Cline> servidores, listaGuardar;
+
+	public Cuadro() {
+		setResizable(false);
+		setTitle("AutoCCcam");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 508, 341);
+		contenido = new JPanel();
+		contenido.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contenido);
+		contenido.setLayout(null);
+		
+		
+		
+		definirVentana();
+		definirEventos();
+		
+		
+		
+		setVisible(true);
+		
+		//btnGenerar.doClick();
+	}
+
+	private void definirVentana() {
+		
+		btnGenerar = new JButton("Generar");
+		btnGenerar.setBounds(341, 217, 119, 37);
+		contenido.add(btnGenerar);	
+		
+		chckbxServerFullhd = new JCheckBox("Server 1");
+		chckbxServerFullhd.setBounds(16, 47, 97, 23);
+		contenido.add(chckbxServerFullhd);
+		
+		chckbxServerB = new JCheckBox("Server 2");
+		chckbxServerB.setBounds(16, 73, 97, 23);
+		contenido.add(chckbxServerB);
+		
+		chckbxServer3 = new JCheckBox("Server 3");
+		chckbxServer3.setBounds(16, 99, 97, 23);
+		contenido.add(chckbxServer3);
+		
+		chckbxServer4 = new JCheckBox("Server 4");
+		chckbxServer4.setBounds(16, 125, 97, 23);
+		//chckbxServer4.setEnabled(false);
+		contenido.add(chckbxServer4);
+		
+		chckbxForzar = new JCheckBox("Forzar 1");
+		chckbxForzar.setBounds(115, 47, 87, 23);
+		contenido.add(chckbxForzar);
+		
+		chckbxForzar_1 = new JCheckBox("Forzar 2");
+		chckbxForzar_1.setBounds(115, 73, 87, 23);
+		contenido.add(chckbxForzar_1);
+		
+		comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Hadu", "General"}));
+		//comboBox.setSelectedIndex(1);
+		comboBox.setBounds(155, 197, 97, 20);
+		contenido.add(comboBox);
+		
+		btnTodo = new JButton("TODO");
+		btnTodo.setBounds(16, 17, 89, 23);
+		contenido.add(btnTodo);
+		
+		selectorDeRuta();
+		
+	}
+
+	private void selectorDeRuta() {
+		
+		textFieldCampoRuta = new JTextField("C:\\Program Files (x86)\\ProgDVB\\Plugins");
+		//textFieldCampoRuta = new JTextField(System.getProperty("user.home"));
+		textFieldCampoRuta.setBounds(16, 225, 236, 20);
+		contenido.add(textFieldCampoRuta);
+		textFieldCampoRuta.setColumns(10);
+		
+		btnSeleccionar = new JButton("Seleccionar");
+		btnSeleccionar.setBounds(16, 256, 111, 23);
+		contenido.add(btnSeleccionar);
+		
+		lblRuta = new JLabel("Ruta del archivo: ");
+		lblRuta.setBounds(16, 200, 97, 14);
+		contenido.add(lblRuta);
+		
+		
+		
+		
+		
+	}
+
+	private void definirEventos() {
+		
+		btnTodo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				selec=!selec;
+				
+				chckbxServerFullhd.setSelected(selec);
+				chckbxServerB.setSelected(selec);
+				chckbxServer3.setSelected(selec);
+				chckbxServer4.setSelected(selec);
+				
+			}
+		});
+		
+		btnTodo.doClick();
+		
+		btnSeleccionar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				//Creamos el objeto JFileChooser
+				JFileChooser fc=new JFileChooser();
+				 
+				//Indicamos lo que podemos seleccionar
+				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				 
+//				//Creamos el filtro
+//				FileNameExtensionFilter filtro = new FileNameExtensionFilter("*.TXT", "txt");
+//				 
+//				//Le indicamos el filtro
+//				fc.setFileFilter(filtro);
+				 
+				//Abrimos la ventana, guardamos la opcion seleccionada por el usuario
+				int seleccion=fc.showOpenDialog(contenido);
+				 
+				//Si el usuario, pincha en aceptar
+				if(seleccion==JFileChooser.APPROVE_OPTION){
+				 
+				    //Seleccionamos el fichero
+				    File fichero=fc.getSelectedFile();
+				    //Ecribe la ruta del fichero seleccionado en el campo de texto
+				    textFieldCampoRuta.setText(fichero.getAbsolutePath());			 
+				    
+				}
+			}
+		});
+		
+		btnGenerar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) throws ArrayIndexOutOfBoundsException {
+				
+				ruta=textFieldCampoRuta.getText();
+				
+				servidores=new ArrayList<Cline>();
+				listaGuardar=new ArrayList<Cline>();
+				
+				Fecha sistema=new Fecha();
+				
+				PublicaIP tuip=new PublicaIP();
+				
+	
+				
+				if(chckbxServerFullhd.isSelected()){
+					
+					UserAgent server1=new UserAgent();
+					
+					try {
+						
+						server1.visit("http://fullhd.hack-sat.org/aaaaa2/index.php");
+						
+						Form click1=server1.doc.getForm(0);
+						
+						click1.submit("Active User!");
+						
+						Cline srvr1=new Cline("fullhd.hack-sat.org", "4000", tuip.obtenerIP(), "hack-sat.com", sistema);
+						
+						servidores.add(srvr1);
+						
+							//C: fullhd.hack-sat.org 4000 5.40.81.139 hack-sat.com;
+						
+						
+					} catch (ResponseException | SearchException e) {
+						JOptionPane.showMessageDialog(contenido, "FALLO SERVER 1");
+					}
+					
+					
+				}
+				
+				if(chckbxServerB.isSelected()){
+					
+					UserAgent server2=new UserAgent();
+					
+					try {
+						
+						server2.visit("http://b1.hack-sat.org/aaa5a1a1/index.php");
+						
+						Form click2=server2.doc.getForm(0);
+						
+						click2.submit("Active User!");
+						
+						Cline srvr2=new Cline("b1.hack-sat.org", "10000", tuip.obtenerIP(), "hack-sat.com", sistema);
+						
+						servidores.add(srvr2);
+						
+						//C: b1.hack-sat.org 10000 5.40.81.139 hack-sat.com;
+						
+						
+					} catch (ResponseException | SearchException e) {
+						JOptionPane.showMessageDialog(contenido, "FALLO SERVER 2");
+					}
+					
+					
+					
+				}
+				
+				if(chckbxForzar.isSelected()){
+					
+					Cline srvr1f=new Cline("fullhd.hack-sat.org", "4000", tuip.obtenerIP(), "hack-sat.com", sistema);
+					
+					servidores.add(srvr1f);
+					
+				}
+				
+				if(chckbxForzar_1.isSelected()){
+					
+					Cline srvr2f=new Cline("b1.hack-sat.org", "10000", tuip.obtenerIP(), "hack-sat.com", sistema);
+					
+					servidores.add(srvr2f);
+					
+					
+				}
+				
+				//cargarFichero();
+				
+				if(chckbxServer3.isSelected()){
+					
+					String urlservidor="http://cccam-free2.com/free2/get.php";
+					
+					try {
+						String []cline=sacarCodigo1(urlservidor);
+						
+						String servidor=cline[5];
+						String puerto=cline[6];
+						String usuario=cline[7];
+						String pass=cline[8];
+						
+						Cline srvr3=new Cline(servidor, puerto, usuario, pass, sistema);
+						
+						servidores.add(srvr3);
+						listaGuardar.add(srvr3);
+						
+					} catch (ArrayIndexOutOfBoundsException | IOException e) {
+						JOptionPane.showMessageDialog(contenido, "FALLO SERVER 3");
+					}
+					
+			
+				}
+				
+				if(chckbxServer4.isSelected()){
+					
+					String urlservidor="http://freeccamserver.com/free/get2.php";
+					
+					try {
+						String []cline=sacarCodigo1(urlservidor);
+						
+						String servidor=cline[5];
+						String puerto=cline[6];
+						String usuario=cline[7];
+						String pass=cline[8];
+						
+						Cline srvr4=new Cline(servidor, puerto, usuario, pass, sistema);
+						
+						servidores.add(srvr4);
+						listaGuardar.add(srvr4);
+						
+						
+					} catch (ArrayIndexOutOfBoundsException | IOException e) {
+						JOptionPane.showMessageDialog(contenido, "FALLO SERVER 4");
+					}
+					
+					
+				}
+				
+				//agregarAlFichero();
+				
+				try {
+					guardarDatos();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				JOptionPane.showMessageDialog(contenido, "Se han generado "+servidores.size()+" lineas");
+				
+				
+			}
+			
+
+			private void cargarFichero() {
+				  
+		        String rutas=System.getProperty("user.home")+"\\lineas.txt";
+				
+		        try{
+		            FileReader fr = new FileReader(rutas);
+		            BufferedReader br =new BufferedReader(fr);
+		            String linea;
+		            String[] campo = null;   
+		            
+		            Fecha sistem=new Fecha();
+		            
+
+		            while((linea=br.readLine())!=null){
+
+		                campo =linea.split(";");
+		                
+		                Fecha fechCline=new Fecha(campo[4]);
+		                
+		                String fCline=fechCline.toString();
+		                
+		                String fSys=sistem.toString();
+		                
+		                if(fCline.equals(fSys)){ //ERROR
+		                	
+		                	Cline meter=new Cline(campo[0], campo[1], campo[2], campo[3], fechCline);
+		                	
+		                	servidores.add(meter);
+		                	listaGuardar.add(meter);
+		                	
+		                	meter=null;
+		                }
+		                
+		            }
+		            
+		            fr.close();
+		            br.close();
+		            fr=null;
+		            br=null;
+		        }
+		        catch (Exception ex){JOptionPane.showMessageDialog(contenido, "Error al leer fichero interno");}
+				
+				
+			}
+
+
+			private void agregarAlFichero() {
+				
+				String rutas=System.getProperty("user.home")+"\\lineas.txt";
+		        
+		        try {
+		            FileWriter fw=new FileWriter(rutas);
+		            BufferedWriter bw=new BufferedWriter(fw);
+		            
+		            for(int z=0;z<listaGuardar.size();z++){
+		            	
+		            	Cline cFichero=listaGuardar.get(z);
+		            
+		                bw.write(cFichero.toString());
+		                bw.newLine();
+		                
+		                cFichero=null;
+		            
+		            }
+		            
+		            fw.flush();
+		            bw.close();
+		            fw.close();
+		            
+		        } catch (Exception ex) {JOptionPane.showMessageDialog(contenido, "Error al escribir fichero interno");}
+				
+				
+			}
+
+
+			private String[] sacarCodigo1(String urlservidor) throws IOException {
+				
+					java.net.URL url=new java.net.URL(urlservidor);
+					java.net.URLConnection con = url.openConnection();
+					InputStream s = con.getInputStream();
+					BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(s));
+					String line = "", linea="";
+					while((line = bufferedReader.readLine())!=null){
+						if(line.contains("<h1>")){
+							
+							linea=line;
+							
+						}
+					}
+					
+					String []cline=linea.split(" ");
+					
+					return cline;
+		    }
+		});		
+	}
+	
+	private void guardarDatos() throws IOException{
+		
+		if(comboBox.getSelectedItem().toString().equals("Hadu")){
+			ruta+="\\Hadu.ini";
+			
+			//CREA EL ARCHIVO
+			File archivo = new File(ruta);
+	        BufferedWriter bw;
+	        if(archivo.exists()) {
+	            bw = new BufferedWriter(new FileWriter(archivo));
+	            bw.write("");
+	        } else {
+	            bw = new BufferedWriter(new FileWriter(archivo));
+	            bw.write("");
+	        }
+	        bw.close();
+			
+	        //ESCRIBE LAS CLINES
+		    try {
+	            FileWriter fw=new FileWriter(ruta);
+	            bw=new BufferedWriter(fw);
+	            
+	            //ESCRIBIR AQUÍ BLOQUE
+	            
+	            bw.write("[General]");
+	            bw.newLine();
+	            bw.write("PluginActive=1");
+	            bw.newLine();
+	            bw.write("KeyPath2=");
+	            bw.newLine();
+	            bw.write("UseTransparency=1");
+	            bw.newLine();
+	            bw.write("MonitorSize=501,404;45,45,48,60,24,90,144,144;35,102,156,24,140");
+	            bw.newLine();
+	            bw.newLine();
+	            
+	            bw.write("[Options]");
+	            bw.newLine();
+	            bw.write("UsePSITables=1");
+	            bw.newLine();
+	            bw.write("SurveyPMT=1");
+	            bw.newLine();
+	            bw.write("UsePATforPMT=0");
+	            bw.newLine();
+	            bw.write("DontUpdViewer=0");
+	            bw.newLine();
+	            bw.write("MaxECMPIDs=0");
+	            bw.newLine();
+	            bw.write("MaxConnections=0");
+	            bw.newLine();
+	            bw.write("DisplayIPorURL=1");
+	            bw.newLine();
+	            bw.write("ECMTimeout=3");
+	            bw.newLine();
+	            bw.write("MaxCAIDLoops=4");
+	            bw.newLine();
+	            bw.write("DCWsOneServ=1");
+	            bw.newLine();
+	            bw.write("LogMessages=0");
+	            bw.newLine();
+	            bw.write("LogMessLevel=2");
+	            bw.newLine();
+	            bw.write("EMMAlone=0");
+	            bw.newLine();
+	            bw.write("EMMFaked=0");
+	            bw.newLine();
+	            bw.write("EMMLog=1");
+	            bw.newLine();
+	            bw.write("DispAllEMMs=0");
+	            bw.newLine();
+	            bw.write("CacheUse=1");
+	            bw.newLine();
+	            bw.write("CacheUpdate=1");
+	            bw.newLine();
+	            bw.write("ManualUse=0");
+	            bw.newLine();
+	            bw.write("Systray=0");
+	            bw.newLine();
+	            bw.newLine();
+	            
+	            bw.write("[Specific]");
+	            bw.newLine();
+	            bw.write("DVBViewerAPI=0");
+	            bw.newLine();
+	            bw.write("DVBViewerAllAudio=1");
+	            bw.newLine();
+	            bw.write("DVBViewerCSAStat=0");
+	            bw.newLine();
+	            bw.write("DVBViewerRecServ=0");
+	            bw.newLine();
+	            bw.write("DVBViewerIdleServ=0");
+	            bw.newLine();
+	            bw.write("DVBViewerEncrServ=0");
+	            bw.newLine();
+	            bw.newLine();
+	            
+	            bw.write("[Device]");
+	            bw.newLine();
+	            bw.write("MDRoot=0");
+	            bw.newLine();
+	            bw.write("DescrCommand=");
+	            bw.newLine();
+	            bw.write("XorEven=");
+	            bw.newLine();
+	            bw.write("XorOdd=");
+	            bw.newLine();
+	            bw.write("UseTT=0");
+	            bw.newLine();
+	            bw.newLine();
+	            bw.newLine();
+	            bw.newLine();
+	            bw.newLine();
+
+	            int y=0;
+//	            y++;
+//	            bw.write("[Serv_"+y+"]");
+//	            bw.newLine();
+//	            bw.write("server=CCCam:fullhd.hack-sat.org:4000:0:user:hack-sat.com");
+//	            bw.newLine();
+//	            bw.write("Active=1");
+//	            bw.newLine();
+//	            bw.newLine();
+//	            
+//	            y++;
+//	            bw.write("[Serv_"+y+"]");
+//	            bw.newLine();
+//	            bw.write("server=CCCam:b1.hack-sat.org:10000:0:user:hack-sat.com");
+//	            bw.newLine();
+//	            bw.write("Active=1");
+//	            bw.newLine();
+//	            bw.newLine();
+	            
+	            //FIN BLOQUE
+	            for(int x=0;x<servidores.size();x++){
+	            	Cline sacar=servidores.get(x);
+	            	y++;
+	            	//ESCRIBIR AQUI NOMBRE DEL SERVER
+	            	bw.write("[Serv_"+y+"]");
+	            	bw.newLine();
+	                String linea =sacar.toHadu();
+	                bw.write(linea);
+	                bw.newLine();
+	                bw.write("Active=1");
+	                bw.newLine();
+	                bw.newLine();
+	                //ESCRIBIR AQUI ESTADO.
+	                sacar=null;
+	            }
+	            
+	            fw.flush();
+	            bw.close();
+	            fw.close();
+	            
+	         } catch (Exception ex) {JOptionPane.showMessageDialog(contenido, "Error al escribir el fichero");}
+			
+		}
+		else if(comboBox.getSelectedItem().toString().equals("General")){
+			
+			ruta+="\\CCcam.cfg";
+			
+			//CREA EL ARCHIVO
+			//System.out.println(ruta);
+			File archivo = new File(ruta);
+	        BufferedWriter bw;
+	        if(archivo.exists()) {
+	            bw = new BufferedWriter(new FileWriter(archivo));
+	            bw.write("");
+	        } else {
+	            bw = new BufferedWriter(new FileWriter(archivo));
+	            bw.write("");
+	        }
+	        bw.close();
+			
+	        //ESCRIBE LAS CLINES
+		    try {
+	            FileWriter fw=new FileWriter(ruta);
+	            bw=new BufferedWriter(fw);
+	            
+	            for(int x=0;x<servidores.size();x++){
+	            	
+	            	Cline sacar=servidores.get(x);
+	            	
+	                String linea =sacar.toGeneral();
+	                bw.write(linea);
+	                bw.newLine();
+	            
+	                sacar=null;
+	            }
+	            
+	            fw.flush();
+	            bw.close();
+	            fw.close();
+	            
+	         } catch (Exception ex) {JOptionPane.showMessageDialog(contenido, "Error al escribir el fichero");}    
+			
+			
+		}
+		
+		
+		
+	}
+}

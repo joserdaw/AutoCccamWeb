@@ -1,0 +1,4 @@
+html{font-family: Arial}
+body {background:-webkit-gradient(linear, 0% 100%, 0% 15%, from(#49B22F), to(#FFFFFF)); background-attachment:fixed; font-family: verdana; line-height: 2}
+#comboselect{font-size: 120%;}
+#btnGenerar{font-size: 150%; margin-top: 10%}
